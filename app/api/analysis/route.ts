@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchCurrentGoldPrice, fetchGoldHistory, fetchExchangeRate, fetchDXY } from '@/lib/goldData';
+
+export const dynamic = 'force-dynamic';
 import { generatePrediction } from '@/lib/prediction';
 import { FALLBACK_ECONOMIC } from '@/lib/constants';
 import type { Currency } from '@/types';
@@ -17,8 +19,8 @@ export async function GET(req: NextRequest) {
       fetchDXY(),
     ]);
 
-    if (history.length < 50) {
-      return NextResponse.json({ error: 'Insufficient historical data for analysis' }, { status: 503 });
+    if (history.length < 5) {
+      return NextResponse.json({ error: 'Could not fetch market data. Please try again.' }, { status: 503 });
     }
 
     const prices = history.map((d) => d.price);

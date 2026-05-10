@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { fetchCurrentGoldPrice } from '@/lib/goldData';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const price = await fetchCurrentGoldPrice();
