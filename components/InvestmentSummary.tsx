@@ -41,8 +41,9 @@ export default function InvestmentSummary({ entry, goldSpotUSD, exchangeRate }: 
   const isProfit = analysis.profitLoss >= 0;
   const purity = KARAT_PURITY[entry.karat];
 
+  const isINR = entry.currency === 'INR' || entry.currency === 'PKR';
   const fmt = (n: number) =>
-    n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    n.toLocaleString(isINR ? 'en-IN' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className={`gold-card p-6 h-full fade-in ${isProfit ? 'glow-green' : 'glow-red'}`}
