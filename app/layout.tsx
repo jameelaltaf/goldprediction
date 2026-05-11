@@ -33,8 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className="min-h-screen transition-colors duration-300"
-            style={{ background: 'radial-gradient(ellipse at top, #1a1208 0%, #080808 60%)' }}>
+      <body className="min-h-screen transition-colors duration-300">
+        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('gpp_theme');if(t){document.documentElement.setAttribute('data-theme',JSON.parse(t));}}catch(e){}` }} />
         {children}
       </body>
     </html>
