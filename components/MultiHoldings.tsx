@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { HoldingEntry, Karat, Currency } from '@/types';
 import { CURRENCY_INFO, KARAT_PURITY, KARAT_OPTIONS, TROY_OZ_TO_GRAMS, LOCAL_MARKET_FACTOR } from '@/lib/constants';
+import { useLocalStorage } from '@/lib/useLocalStorage';
 
 interface MultiHoldingsProps {
   currentSpotUSD: number;
@@ -32,7 +33,7 @@ const DEFAULT_HOLDING: Omit<HoldingEntry, 'id'> = {
 };
 
 export default function MultiHoldings({ currentSpotUSD, defaultCurrency, exchangeRates }: MultiHoldingsProps) {
-  const [holdings, setHoldings] = useState<HoldingEntry[]>([]);
+  const [holdings, setHoldings, clearHoldings] = useLocalStorage<HoldingEntry[]>('gpp_holdings', []);
   const [adding, setAdding]     = useState(false);
   const [form, setForm]         = useState<Omit<HoldingEntry, 'id'>>({ ...DEFAULT_HOLDING, currency: defaultCurrency });
   const [priceMode, setPriceMode] = useState<'total' | 'per_gram'>('total');
@@ -44,17 +45,16 @@ export default function MultiHoldings({ currentSpotUSD, defaultCurrency, exchang
   const addHolding = () => {
     const perGram = priceMode === 'total' && form.weightGrams > 0 ? totalInput / form.weightGrams : form.purchasePrice;
     if (perGram <= 0 || form.weightGrams <= 0) return;
-    setHoldings((prev) => [...prev, { ...form, id: uid(), purchasePrice: perGram }]);
+    setHoldings((prev: HoldingEntry[]) => [...prev, { ...form, id: uid(), purchasePrice: perGram }]);
     setAdding(false);
     setForm({ ...DEFAULT_HOLDING, currency: defaultCurrency });
     setTotalInput(0);
   };
 
-  const removeHolding = (id: string) => setHoldings((prev) => prev.filter((h) => h.id !== id));
+  const removeHolding = (id: string) => setHoldings((prev: HoldingEntry[]) => prev.filter((h) => h.id !== id));
 
   const totals = holdings.reduce((acc, h) => {
     const r = calcHolding(h, currentSpotUSD, exchangeRates);
-    // Normalise to USD for summing across currencies
     const rateH = exchangeRates[h.currency] ?? 1;
     return {
       invested: acc.invested + r.purchased / rateH,
@@ -75,11 +75,20 @@ export default function MultiHoldings({ currentSpotUSD, defaultCurrency, exchang
             <p className="text-xs text-gray-500">Track multiple gold purchases in one place</p>
           </div>
         </div>
-        <button onClick={() => setAdding(true)}
-          className="px-4 py-2 rounded-xl text-sm font-bold text-black transition-all"
-          style={{ background: 'linear-gradient(135deg, #FFD700, #FFA500)' }}>
-          + Add Holding
-        </button>
+        <div className="flex items-center gap-2">
+          {holdings.length > 0 && (
+            <button onClick={() => clearHoldings()}
+              className="px-3 py-2 rounded-xl text-xs text-gray-600 hover:text-red-400 border border-gray-800 hover:border-red-400/30 transition-all"
+              title="Clear all holdings">
+              Clear all
+            </button>
+          )}
+          <button onClick={() => setAdding(true)}
+            className="px-4 py-2 rounded-xl text-sm font-bold text-black transition-all"
+            style={{ background: 'linear-gradient(135deg, #FFD700, #FFA500)' }}>
+            + Add Holding
+          </button>
+        </div>
       </div>
 
       {/* Add form */}
