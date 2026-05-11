@@ -72,7 +72,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <Header goldPrice={goldPrice} loading={priceLoading} />
+      <Header goldPrice={goldPrice} loading={priceLoading} inrRate={exchangeRates.INR} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
