@@ -72,7 +72,7 @@ export type Karat = 24 | 22 | 21 | 18 | 14 | 10 | 9;
 export type Currency = 'USD' | 'PKR' | 'AED' | 'SAR' | 'GBP' | 'EUR' | 'INR';
 
 export interface PortfolioEntry {
-  purchasePrice: number;
+  purchasePrice: number; // per gram in selected currency
   karat: Karat;
   weightGrams: number;
   currency: Currency;
@@ -92,4 +92,36 @@ export interface FullAnalysis {
   exchangeRate: number;
   dxy: { current: number; change1m: number };
   prediction: Prediction;
+}
+
+// Multiple holdings
+export interface HoldingEntry {
+  id: string;
+  label: string;
+  purchasePrice: number; // per gram in currency
+  karat: Karat;
+  weightGrams: number;
+  currency: Currency;
+  purchaseDate: string; // ISO date string
+}
+
+// India city rate
+export interface CityRate {
+  city: string;
+  state: string;
+  rate24k: number;   // ₹ per gram
+  rate22k: number;
+  rate18k: number;
+  premium: number;   // ₹ per gram over MCX base
+  featured: boolean;
+  note?: string;
+}
+
+// News article
+export interface NewsArticle {
+  title: string;
+  link: string;
+  source: string;
+  pubDate: string;
+  timeAgo: string;
 }
