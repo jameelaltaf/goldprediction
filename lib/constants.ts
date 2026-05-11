@@ -42,6 +42,20 @@ export const FALLBACK_EXCHANGE_RATES: Record<Currency, number> = {
   INR: 83.5,
 };
 
+// Local market premium factors applied on top of international spot price.
+// These account for import duties, taxes, and local market premiums that
+// are embedded in retail gold prices but NOT in the international spot price.
+export const LOCAL_MARKET_FACTOR: Partial<Record<Currency, { factor: number; note: string }>> = {
+  INR: {
+    factor: 1.06 * 1.03, // 6% import duty (post Jul-2024 budget) + 3% GST = ~9.18%
+    note: 'Includes 6% import duty + 3% GST (Indian market)',
+  },
+  PKR: {
+    factor: 1.08, // Pakistan import duty + regulatory duty (~8%)
+    note: 'Includes ~8% import & regulatory duty (Pakistani market)',
+  },
+};
+
 // Approximate current economic data (used as fallback if live fetch fails)
 export const FALLBACK_ECONOMIC = {
   fedFundsRate: 4.375,
