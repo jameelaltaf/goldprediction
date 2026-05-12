@@ -108,7 +108,12 @@ export default function MarketSignals({ signals }: MarketSignalsProps) {
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            {cat === 'all' ? 'All' : CATEGORY_LABELS[cat].emoji + ' ' + CATEGORY_LABELS[cat].label}
+            {cat === 'all' ? 'All' : (
+              <>
+                <span className="sm:hidden">{CATEGORY_LABELS[cat].emoji}</span>
+                <span className="hidden sm:inline">{CATEGORY_LABELS[cat].emoji} {CATEGORY_LABELS[cat].label}</span>
+              </>
+            )}
           </button>
         ))}
       </div>
